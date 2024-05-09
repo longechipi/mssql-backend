@@ -13,7 +13,10 @@ export const loginUsuario = async (req, res) => {
     const result = await pool
       .request()
       .input("login", sql.VarChar, login)
-      .query("SELECT login, pswd FROM sec_users WHERE login = @login");
+      .input("pswd", sql.VarChar, pswd)
+      .query(
+        "SELECT login, pswd FROM sec_users WHERE login = @login AND pswd = @pswd"
+      );
     console.log("AQUI ESTOY: ", result);
 
     if (result.recordset.length === 0) {
