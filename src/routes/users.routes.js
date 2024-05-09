@@ -5,9 +5,13 @@ import {
   createUsuario,
   updateUsuario,
   deleteUsuario,
+  loginUsuario,
 } from "../controllers/users.controllers.js";
 
 const rutas = Router();
+
+//---- Ruta para Login ----//
+rutas.post("/login", loginUsuario);
 
 //---- Todos los Usuarios ----//
 rutas.get("/users", getUsuarios);

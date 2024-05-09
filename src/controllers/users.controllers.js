@@ -1,6 +1,32 @@
 import { getConnection } from "../database/connection.js";
 import sql from "mssql";
 
+//Funcion para hacer Login
+export const loginUsuario = async (req, res) => {
+  try {
+    if (!req.body || !req.body.login || !req.body.pswd) {
+      return res.status(400).json({ message: "Missing login or password" });
+    }
+    const { login, pswd } = req.body;
+    const pool = await getConnection();
+
+    const result = await pool
+      .request()
+      .input("login", sql.VarChar, login)
+      .query("SELECT login, pswd FROM sec_users WHERE login = @login");
+    console.log("AQUI ESTOY: ", result);
+
+    if (result.recordset.length === 0) {
+      return res.status(401).json({ message: "Invalid login credentials" });
+    }
+
+    res.status(200).json({ message: "Login successful!" });
+  } catch (error) {
+    console.error(error); // Log the error for debugging
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
+
 //funcion para consultar todos los Usuarios
 export const getUsuarios = async (req, res) => {
   try {
