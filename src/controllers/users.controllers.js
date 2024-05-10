@@ -7,15 +7,16 @@ export const loginUsuario = async (req, res) => {
     if (!req.body || !req.body.login || !req.body.pswd) {
       return res.status(400).json({ message: "Missing login or password" });
     }
-    const { login, pswd } = req.body;
+    const { login, name, pswd } = req.body;
     const pool = await getConnection();
 
     const result = await pool
       .request()
       .input("login", sql.VarChar, login)
+      .input("name", sql.VarChar, name)
       .input("pswd", sql.VarChar, pswd)
       .query(
-        "SELECT login, pswd FROM sec_users WHERE login = @login AND pswd = @pswd"
+        "SELECT login, name, pswd FROM sec_users WHERE login = @login AND pswd = @pswd"
       );
     console.log("AQUI ESTOY: ", result);
 
@@ -23,7 +24,10 @@ export const loginUsuario = async (req, res) => {
       return res.status(401).json({ message: "Invalid login credentials" });
     }
 
-    res.status(200).json({ message: "Login successful!" });
+    res.status(200).json({
+      login: req.body.login,
+      name: req.body.name,
+    });
   } catch (error) {
     console.error(error); // Log the error for debugging
     res.status(500).json({ message: "Internal server error" });
