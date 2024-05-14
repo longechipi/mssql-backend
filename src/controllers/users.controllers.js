@@ -23,7 +23,6 @@ export const loginUsuario = async (req, res) => {
     if (result.recordset.length === 0) {
       return res.status(401).json({ message: "Invalid login credentials" });
     }
-
     res.status(200).json({
       login: req.body.login,
       name: req.body.name,
